@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel Wars</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header>
+    <h1>PIXEL<span>WARS</span></h1>
+    <p class="tag">One canvas. Everyone paints. Every <b>{{ cooldown }}s</b>.</p>
+  </header>
+
+  <main>
+    <section class="stage">
+      <div class="frame">
+        <canvas id="board" width="{{ width }}" height="{{ height }}"></canvas>
+        <div id="cursor" aria-hidden="true"></div>
+      </div>
+      <div class="coords"><span id="coords">x –, y –</span><span id="status">connecting…</span></div>
+    </section>
+
+    <aside>
+      <div class="panel">
+        <h2>Palette</h2>
+        <div id="palette">
+          {% for colour in palette %}
+          <button class="swatch{% if loop.index0 == 5 %} active{% endif %}" style="--c: {{ colour }}"
+                  data-c="{{ loop.index0 }}" aria-label="colour {{ loop.index0 }}"></button>
+          {% endfor %}
+        </div>
+        <div class="cooldown"><div id="cd-bar"></div><span id="cd-text">READY</span></div>
+      </div>
+
+      <div class="panel">
+        <h2>Cluster</h2>
+        <dl>
+          <dt>Pixels placed</dt><dd id="placed">–</dd>
+          <dt>Board version</dt><dd id="version">–</dd>
+          <dt>Storage</dt><dd id="storage">–</dd>
+        </dl>
+        <h3>Replicas seen</h3>
+        <ul id="replicas"></ul>
+        <p class="hint">Nginx spreads your requests across the app containers. Each bar is one replica.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer>Click to paint · Scroll to zoom · Open a second window and watch it sync</footer>
+
+  <script>
+    window.PW = { width: {{ width }}, height: {{ height }}, palette: {{ palette | tojson }}, cooldown: {{ cooldown }} };
+  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
